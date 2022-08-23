@@ -3,6 +3,10 @@ import axios from 'axios'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE
 
+const api = axios.create({
+  baseURL: API_BASE,
+})
+
 interface Project {
   id: number
   name: string
@@ -38,13 +42,24 @@ interface AllPEPs {
   namespaces: GetNamespace[]
 }
 
+export interface Versions {
+  pephub_version: string
+  peppy_version: string
+  python_version: string
+}
+
+export const useVersions = () => {
+  return useQuery(['versions'], async () => {
+    const { data } = await api.get<Versions>('/_version')
+    return data
+  })
+}
+
 export const useNamespace = (namespace: string | string[] | undefined) => {
   return useQuery(
     ['namespace', namespace],
     async () => {
-      const { data } = await axios.get<GetNamespace>(
-        `${API_BASE}/pep/${namespace}`
-      )
+      const { data } = await api.get<GetNamespace>(`/pep/${namespace}`)
       return data
     },
     // only run when a single string is passed
@@ -56,14 +71,14 @@ export const useNamespace = (namespace: string | string[] | undefined) => {
 
 export const useNamespaces = () => {
   return useQuery(['namespaces'], async () => {
-    const { data } = await axios.get<GetNamespaces>(`${API_BASE}/pep/`)
+    const { data } = await api.get<GetNamespaces>('/pep/')
     return data
   })
 }
 
 export const useAllPEPs = () => {
   return useQuery(['all-PEPs'], async () => {
-    const { data } = await axios.get<AllPEPs>(`${API_BASE}/pep/list`)
+    const { data } = await api.get<AllPEPs>('/pep/list')
     return data
   })
 }
@@ -77,7 +92,7 @@ export const useProject = (
     ['project', namespace, project],
     async () => {
       const { data } = await axios.get<GetProject>(
-        `${API_BASE}/pep/${namespace}/${project}`
+        `/pep/${namespace}/${project}`
       )
       return data
     },

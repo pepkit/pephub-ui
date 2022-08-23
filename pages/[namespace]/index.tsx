@@ -4,29 +4,35 @@ import {
   ButtonGroup,
   Flex,
   Skeleton,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
+  Th,
+  Thead,
+  Tr,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { FC } from 'react'
 import { useNamespace } from '../../api/queries'
 import { Layout } from '../../components/layout/Layout'
-import { ProjectCard } from '../../components/projects/ProjectCard'
 
 const Namespace: FC = () => {
   const router = useRouter()
-  const { data, error, isFetching } = useNamespace(router.query.namespace)
+  const { data, error, isLoading } = useNamespace(router.query.namespace)
   if (error) {
     return <Box>{JSON.stringify(error, null, 2)}</Box>
   }
   return (
     <Layout>
       <Box w="full">
-        <Skeleton isLoaded={!isFetching} w="full">
+        <Skeleton isLoaded={!isLoading} w="full">
           <Text fontSize="6xl" fontWeight="bold">
             {data?.namespace}
           </Text>
         </Skeleton>
-        <Skeleton my="2" isLoaded={!isFetching} w="full">
+        <Skeleton my="2" isLoaded={!isLoading} w="full">
           <Flex fontSize="2xl">
             <Text fontWeight="bold" mr="1">
               No. Samples:
@@ -48,18 +54,29 @@ const Namespace: FC = () => {
           </ButtonGroup>
         </Flex>
       </Box>
-      <Box>
-        <Flex wrap="wrap">
-          {data?.projects.map((p, i) => (
-            <ProjectCard
-              key={i}
-              namespace={data.namespace}
-              name={p.name}
-              n_samples={p.n_samples}
-              description={p.description}
-            />
-          ))}
-        </Flex>
+      <Box w="full">
+        <TableContainer w="full">
+          <Table variant="simple" size="sm">
+            <Thead>
+              <Tr>
+                <Th>Project name</Th>
+                <Th>No. of samples</Th>
+                <Th>Description</Th>
+                <Th>Link</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {data?.projects.map((p) => (
+                <Tr key={p.id}>
+                  <Td>{p.name}</Td>
+                  <Td>{p.n_samples}</Td>
+                  <Td>{p.description || 'No description'}</Td>
+                  <Td>{`/${data.namespace}/${p.name}`}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
       </Box>
     </Layout>
   )

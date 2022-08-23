@@ -14,6 +14,7 @@ import {
   ModalOverlay,
   Select,
   Text,
+  Textarea,
   useToast,
 } from '@chakra-ui/react'
 import axios from 'axios'
@@ -42,6 +43,7 @@ export const NewPEPForm: FC = () => {
   const { data: namespaces, isFetching } = useNamespaces()
   const [namespace, setNamespace] = useState<string>('')
   const [projectName, setProjectName] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
   const [configFile, setConfigFile] = useState<File[]>([])
   const [otherFiles, setOtherFiles] = useState<File[]>([])
   const [newNamespaceOpen, setNewNamespaceOpen] = useState<boolean>(false)
@@ -58,6 +60,7 @@ export const NewPEPForm: FC = () => {
       formData.append('project_name', projectName)
     } else {
       alert('Please specify a project name!')
+      setSubmitting(false)
       return
     }
 
@@ -90,17 +93,18 @@ export const NewPEPForm: FC = () => {
       }
     } else {
       alert('Please specify namespace!')
+      setSubmitting(false)
       return
     }
   }
 
   return (
-    <Box border="1px" rounded="md" p="4" boxShadow="md" w="full">
+    <Box w="full">
       <form className="w-full" onSubmit={handleSubmit}>
         <FormControl>
           <Box as="section" mb="6">
             <FormLabel fontSize="xl" fontWeight="bold">
-              1. Select namespace and project name
+              Select namespace and project name
             </FormLabel>
             <Flex alignItems="center" my="2">
               <Button
@@ -146,7 +150,7 @@ export const NewPEPForm: FC = () => {
           </Box>
           <Box as="section" mb="3">
             <FormLabel fontSize="xl" fontWeight="bold">
-              2. Select Config File
+              Select Config File
             </FormLabel>
             <FileUploadButton
               name="files"
@@ -165,7 +169,7 @@ export const NewPEPForm: FC = () => {
           </Box>
           <Box as="section" mb="3">
             <FormLabel fontSize="xl" fontWeight="bold">
-              3. Select Other Files
+              Select Other Files
             </FormLabel>
             <FileUploadButton
               name="other-files"
@@ -183,6 +187,17 @@ export const NewPEPForm: FC = () => {
               Select Files
             </FileUploadButton>
           </Box>
+          <Box as="section">
+            <FormLabel fontSize="xl" fontWeight="bold">
+              Description
+            </FormLabel>
+            <Textarea
+              placeholder="Description of your PEP and its data."
+              onChange={(e) => setDescription(e.target.value)}
+              value={description}
+              variant="filled"
+            />
+          </Box>
           {/* <Box as="section" mb="6">
             <FormLabel fontSize="xl" fontWeight="bold">
               3. Validate
@@ -195,11 +210,14 @@ export const NewPEPForm: FC = () => {
         <Box mt="4">
           <Button
             disabled={submitting}
-            float="right"
             type="submit"
             colorScheme="green"
+            mr={2}
           >
             {submitting ? 'Submitting...' : 'Submit'}
+          </Button>
+          <Button colorScheme="gray" variant="ghost">
+            Clear
           </Button>
         </Box>
       </form>

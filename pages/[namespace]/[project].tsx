@@ -149,6 +149,8 @@ const Project: FC<PageProps> = ({
                     mr={2}
                     rightIcon={<DownloadIcon />}
                     colorScheme="blue"
+                    borderColor="black"
+                    border={'1px black solid'}
                   >
                     Download
                   </Button>

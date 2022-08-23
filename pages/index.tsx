@@ -1,11 +1,25 @@
-import { ButtonGroup, Button, Text, FormControl } from '@chakra-ui/react'
+import {
+  ButtonGroup,
+  Button,
+  Text,
+  Box,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Skeleton,
+} from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import Link from 'next/link'
 import { MdArrowForward } from 'react-icons/md'
+import { useAllPEPs } from '../api/queries'
 import { Layout } from '../components/layout/Layout'
-import { PEPSearch } from '../components/search/PEPSearch'
 
 const Home: NextPage = () => {
+  const { data: allPEPs, isLoading: isLoadingAllPEPs } = useAllPEPs()
   return (
     <Layout>
       <div className="py-8">
@@ -27,12 +41,46 @@ const Home: NextPage = () => {
           </Link>
         </ButtonGroup>
       </div>
-      <Text fontSize="4xl" fontWeight="bold">
-        ...or, search for PEPs
-      </Text>
-      <FormControl>
-        <PEPSearch />
-      </FormControl>
+      <Box w="full">
+        <Text fontSize="4xl" fontWeight="bold" mb={2}>
+          Namespaces in PEPhub:
+        </Text>
+        <Skeleton isLoaded={!isLoadingAllPEPs} height="80px" w="full">
+          <TableContainer w="full">
+            <Table variant="simple" size="sm">
+              <Thead fontWeight="bold">
+                <Tr>
+                  <Th>Namespace</Th>
+                  <Th>No. of projects</Th>
+                  <Th>No. of samples</Th>
+                  <Th>API Endpoint</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {allPEPs?.namespaces.map((n) => (
+                  <Tr key={n.namespace}>
+                    <Td fontWeight="bold">{n.namespace}</Td>
+                    <Td>{n.n_projects}</Td>
+                    <Td>{n.n_samples}</Td>
+                    <Td>
+                      <Link href={`${n.namespace}`}>
+                        <Button
+                          size="sm"
+                          colorScheme="gray"
+                          border={'1px'}
+                          borderColor="black"
+                        >
+                          More info
+                        </Button>
+                      </Link>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </Skeleton>
+      </Box>
     </Layout>
   )
 }

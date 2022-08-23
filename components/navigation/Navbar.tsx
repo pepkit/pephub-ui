@@ -1,3 +1,4 @@
+import { InfoOutlineIcon, PlusSquareIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
@@ -9,6 +10,7 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
+import { MdPages } from 'react-icons/md'
 
 export const Navbar: FC = () => {
   return (
@@ -36,12 +38,16 @@ export const Navbar: FC = () => {
               colorScheme="black"
             >
               {[
-                { title: 'About', href: '/about' },
-                { title: 'GitHub', href: 'https://github.com/pepkit/pephub' },
-                { title: 'Submit', href: '/submit' },
+                { title: 'About', href: '/about', icon: <InfoOutlineIcon /> },
+                {
+                  title: 'GitHub',
+                  href: 'https://github.com/pepkit/pephub',
+                  icon: <MdPages />,
+                },
+                { title: 'Submit', href: '/submit', icon: <PlusSquareIcon /> },
               ].map((l) => (
                 <Link key={l.href} href={l.href}>
-                  <Button>{l.title}</Button>
+                  <Button rightIcon={l.icon}>{l.title}</Button>
                 </Link>
               ))}
             </ButtonGroup>
