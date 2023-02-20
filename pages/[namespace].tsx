@@ -10,6 +10,7 @@ import { ProjectCard } from '@/components/projects/project-card'
 import { useState } from 'react'
 import { DeletePEPModal } from '@/components/modals/delete-modal'
 import { AddPEPModal } from '@/components/modals/add-modal'
+import { NamespaceEndpointsModal } from '@/components/modals/namespace-endpoints'
 
 const NamespacePage: NextPage = () => {
   // query things
@@ -34,6 +35,7 @@ const NamespacePage: NextPage = () => {
   const [pepToDelete, setPepToDelete] = useState('')
   const [confrimBoxText, setConfirmBoxText] = useState('')
   const [addPEPModal, setAddPEPModal] = useState(false)
+  const [namespaceEndpointsModal, setNamespaceEndpointsModal] = useState(false)
 
   if (namespace === undefined || isLoadingNamespace || isLoadingNamespaceInfo) {
     return (
@@ -63,7 +65,11 @@ const NamespacePage: NextPage = () => {
         <div>
           {user?.data.login === namespace ? (
             <>
-              <Button variant="outline-primary" className="ms-1">
+              <Button
+                onClick={() => setNamespaceEndpointsModal(true)}
+                variant="outline-primary"
+                className="ms-1"
+              >
                 <i className="bi bi-hdd-stack"></i> API Endpoints
               </Button>
               <Button
@@ -104,6 +110,10 @@ const NamespacePage: NextPage = () => {
         setConfirmBoxText={setConfirmBoxText}
       />
       <AddPEPModal addPEPModal={addPEPModal} setAddPEPModal={setAddPEPModal} />
+      <NamespaceEndpointsModal
+        namespaceEndpointsModal={namespaceEndpointsModal}
+        setNamespaceEndpointsModal={setNamespaceEndpointsModal}
+      />
     </PageLayout>
   )
 }
