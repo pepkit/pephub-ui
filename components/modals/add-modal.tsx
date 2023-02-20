@@ -95,7 +95,7 @@ export const AddPEPModal: FC<Props> = ({ addPEPModal, setAddPEPModal }) => {
         >
           Cancel
         </Button>
-        <Button variant="success" disabled={btnDisabled}>
+        <Button variant="success" disabled={true}>
           <i className="bi bi-plus-circle me-1"></i>
           Add
         </Button>

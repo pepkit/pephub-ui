@@ -12,6 +12,7 @@ export interface JWTWithAccessToken extends JWT {
 }
 
 export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET || '',
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID || '',

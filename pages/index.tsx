@@ -78,6 +78,9 @@ export default function Home() {
             />
           </div>
         </div>
+        <pre>
+          <code>{JSON.stringify(session, null, 2)}</code>
+        </pre>
       </PageLayout>
     </>
   )
