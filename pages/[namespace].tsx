@@ -2,12 +2,14 @@ import { useRouter } from 'next/router'
 import { PageLayout } from '@/components/layout/page-layout'
 import { NextPage } from 'next'
 import { useNamespaceProjects } from '@/hooks/useNamespaceProjects'
-import { Button, Modal } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import { useSession } from 'next-auth/react'
 import { useUser } from '@/hooks/useUser'
 import { useNamespace } from '@/hooks/useNamespace'
 import { ProjectCard } from '@/components/projects/project-card'
 import { useState } from 'react'
+import { DeletePEPModal } from '@/components/modals/delete-modal'
+import { AddPEPModal } from '@/components/modals/add-modal'
 
 const NamespacePage: NextPage = () => {
   // query things
@@ -31,6 +33,7 @@ const NamespacePage: NextPage = () => {
   const [deletePEPModal, setDeletePEPModal] = useState(false)
   const [pepToDelete, setPepToDelete] = useState('')
   const [confrimBoxText, setConfirmBoxText] = useState('')
+  const [addPEPModal, setAddPEPModal] = useState(false)
 
   if (namespace === undefined || isLoadingNamespace || isLoadingNamespaceInfo) {
     return (
@@ -63,7 +66,11 @@ const NamespacePage: NextPage = () => {
               <Button variant="outline-primary" className="ms-1">
                 <i className="bi bi-hdd-stack"></i> API Endpoints
               </Button>
-              <Button variant="outline-success" className="ms-1">
+              <Button
+                onClick={() => setAddPEPModal(true)}
+                variant="outline-success"
+                className="ms-1"
+              >
                 <i className="bi bi-plus-circle"></i> Add PEP
               </Button>
             </>
@@ -78,8 +85,8 @@ const NamespacePage: NextPage = () => {
         {namespaceInfo?.number_of_samples}
       </div>
       <div>
-        {namespaceProjects?.items.map((project) => (
-          <div className="my-2" key={project.digest}>
+        {namespaceProjects?.items.map((project, i) => (
+          <div className="my-2" key={i}>
             <ProjectCard
               setPEPToDelete={(v: string) => setPepToDelete(v)}
               setDeletePEPModal={(v: boolean) => setDeletePEPModal(v)}
@@ -88,51 +95,15 @@ const NamespacePage: NextPage = () => {
           </div>
         ))}
       </div>
-      <Modal
-        animation={false}
-        show={deletePEPModal}
-        onHide={() => {
-          setConfirmBoxText('')
-          setPepToDelete('')
-          setDeletePEPModal(false)
-        }}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            Delete <span className="fw-bold">{pepToDelete}</span>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete this PEP? This action cannot be
-          undone. To confirm, type{' '}
-          <span className="fw-bold">{pepToDelete}</span> in the box below:
-          <input
-            value={confrimBoxText}
-            onChange={(e) => setConfirmBoxText(e.target.value)}
-            className="form-control mt-2"
-            placeholder={pepToDelete}
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="outline-secondary"
-            onClick={() => {
-              setDeletePEPModal(false)
-              setConfirmBoxText('')
-              setPepToDelete('')
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={confrimBoxText !== pepToDelete}
-            variant="danger"
-            onClick={() => setDeletePEPModal(false)}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <DeletePEPModal
+        deletePEPModal={deletePEPModal}
+        setDeletePEPModal={setDeletePEPModal}
+        pepToDelete={pepToDelete}
+        setPepToDelete={setPepToDelete}
+        confrimBoxText={confrimBoxText}
+        setConfirmBoxText={setConfirmBoxText}
+      />
+      <AddPEPModal addPEPModal={addPEPModal} setAddPEPModal={setAddPEPModal} />
     </PageLayout>
   )
 }

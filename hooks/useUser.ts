@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import axios from 'axios'
 
 interface GitHubUserResponse {
@@ -52,11 +53,15 @@ const fetchCurrentUser = () => {
   return axios.get<GitHubUserResponse>('/api/github/account')
 }
 
-export const useUser = (name: string | undefined | null, enabled = true) => {
+export const useUser = (
+  name: string | undefined | null = null,
+  enabled = true
+) => {
+  const session = useSession()
   const query = useQuery({
-    queryKey: ['current-user', name],
+    queryKey: ['current-user', name || session.data?.user?.name],
     queryFn: fetchCurrentUser,
-    enabled,
+    enabled: enabled || !!session.data?.user?.name,
   })
   return query
 }

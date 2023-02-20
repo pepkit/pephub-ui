@@ -3,6 +3,12 @@ a {
   @apply text-decoration-none;
 }
 
+.dnd-border {
+  border-width: 1px !important;
+  border-color: #b6b6b6 !important;
+  border-style: dashed !important;
+}
+
 /* animate-pulse from tailwind */
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
