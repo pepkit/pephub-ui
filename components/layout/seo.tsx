@@ -15,6 +15,8 @@ export const SEO: FC<Props> = ({ title, description }) => {
         name="description"
         content={description || SITE_CONSTS.description}
       />
+      {/* favicon */}
+      <link rel="icon" href="/pep.svg" />
     </Head>
   )
 }

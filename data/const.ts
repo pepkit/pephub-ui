@@ -1,4 +1,4 @@
 export const SITE_CONSTS = {
-  title: 'PEPHub',
+  title: 'pephub',
   description: 'Biological sample metadata server.',
 }

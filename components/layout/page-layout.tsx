@@ -7,14 +7,15 @@ interface Props {
   children: React.ReactNode
   title?: string
   description?: string
+  bgBlue?: boolean
 }
 
 export const PageLayout: FC<Props> = ({ children, title, description }) => {
   return (
-    <>
+    <main style={{ minHeight: '100vh' }}>
       <SEO title={title} description={description} />
       <NavigationBar />
-      <Container>{children}</Container>
-    </>
+      <Container className="h-100">{children}</Container>
+    </main>
   )
 }
