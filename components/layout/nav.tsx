@@ -1,11 +1,18 @@
 import Image from 'next/image'
+import { useState } from 'react'
 import { Container, Navbar, Nav, Button, Dropdown } from 'react-bootstrap'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useUser } from '@/hooks/useUser'
+import { useRouter } from 'next/router'
 
 export const NavigationBar = () => {
   const { data: session } = useSession()
   const { data: githubInfo } = useUser(session?.user?.name, session !== null)
+
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const router = useRouter()
+
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -30,6 +37,13 @@ export const NavigationBar = () => {
           <input
             placeholder="Search PEPhub"
             className="form-control w-25 me-3"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                router.push(`/search?query=${searchQuery}`)
+              }
+            }}
           />
           {session ? (
             <>

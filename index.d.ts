@@ -36,3 +36,20 @@ interface NamespaceInfo {
   number_of_samples: number
   projects_endpoint: string
 }
+
+interface ProjectSearchHit {
+  id: number
+  version: number
+  score: number
+  payload: {
+    registry: string
+    description: string
+  }
+  vector: null
+}
+
+interface SearchResults {
+  query: string
+  results: ProjectSearchHit[]
+  namespace_hits: string[]
+}

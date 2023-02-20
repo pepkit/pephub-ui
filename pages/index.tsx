@@ -30,7 +30,7 @@ export default function Home() {
               a GitHub account.
             </p>
             <div className="d-flex flex-row align-items-center">
-              {session ? (
+              {session.status === 'authenticated' ? (
                 <Link
                   className="text-decoration-none"
                   href={`/${user?.data.login}`}
