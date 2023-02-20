@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { PageLayout } from '@/components/layout/page-layout'
 import { NextPage } from 'next'
 import { useNamespaceProjects } from '@/hooks/useNamespaceProjects'
-import { Button } from 'react-bootstrap'
+import { Button, Form, Spinner } from 'react-bootstrap'
 import { useSession } from 'next-auth/react'
 import { useUser } from '@/hooks/useUser'
 import { useNamespace } from '@/hooks/useNamespace'
@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { DeletePEPModal } from '@/components/modals/delete-modal'
 import { AddPEPModal } from '@/components/modals/add-modal'
 import { NamespaceEndpointsModal } from '@/components/modals/namespace-endpoints'
+import { useDebounce } from '@/hooks/useDebounce'
 
 const NamespacePage: NextPage = () => {
   // query things
@@ -21,12 +22,22 @@ const NamespacePage: NextPage = () => {
   const { data: session } = useSession()
   const { data: user } = useUser(session?.user?.name, session !== null)
 
+  // search things
+  const [search, setSearch] = useState('')
+  const [limit, setLimit] = useState(5)
+  const [offset, setOffset] = useState(0)
+  const debouncedSearch = useDebounce(search, 500)
+
   // namespace things
   const {
     data: namespaceProjects,
-    isLoading: isLoadingNamespace,
+    isLoading: isLoadingNamespaceProjects,
     error,
-  } = useNamespaceProjects(namespace)
+  } = useNamespaceProjects(namespace, {
+    query: debouncedSearch,
+    limit: limit,
+    offset: offset,
+  })
   const { data: namespaceInfo, isLoading: isLoadingNamespaceInfo } =
     useNamespace(namespace)
 
@@ -37,7 +48,7 @@ const NamespacePage: NextPage = () => {
   const [addPEPModal, setAddPEPModal] = useState(false)
   const [namespaceEndpointsModal, setNamespaceEndpointsModal] = useState(false)
 
-  if (namespace === undefined || isLoadingNamespace || isLoadingNamespaceInfo) {
+  if (namespace === undefined || isLoadingNamespaceInfo) {
     return (
       <PageLayout>
         <div
@@ -90,16 +101,90 @@ const NamespacePage: NextPage = () => {
         <span className="fw-bold">Total Samples:</span>{' '}
         {namespaceInfo?.number_of_samples}
       </div>
+      <div className="d-flex flex-row align-items-center  mt-2">
+        <div className="input-group">
+          <span className="input-group-text">Search</span>
+          <Form.Control
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder={`Search for PEPs in ${namespace}`}
+          />
+        </div>
+        <div className="input-group w-25 ms-2">
+          <span className="input-group-text">Limit</span>
+          <select
+            className="form-select mb-0"
+            value={limit}
+            onChange={(e) => setLimit(parseInt(e.target.value))}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
       <div>
-        {namespaceProjects?.items.map((project, i) => (
-          <div className="my-2" key={i}>
-            <ProjectCard
-              setPEPToDelete={(v: string) => setPepToDelete(v)}
-              setDeletePEPModal={(v: boolean) => setDeletePEPModal(v)}
-              {...project}
-            />
+        {isLoadingNamespaceProjects ? (
+          <div className="py-5 d-flex flex-column align-items-center justify-content-center">
+            <div>
+              <h4 className="animate-pulse">Fetching projects...</h4>
+            </div>
+            <div>
+              <Spinner animation="border">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            </div>
           </div>
-        ))}
+        ) : (
+          <div>
+            {namespaceProjects?.items.map((project, i) => (
+              <div className="my-2" key={i}>
+                <ProjectCard
+                  setPEPToDelete={(v: string) => setPepToDelete(v)}
+                  setDeletePEPModal={(v: boolean) => setDeletePEPModal(v)}
+                  {...project}
+                />
+              </div>
+            ))}
+            {/*  pagination things */}
+            {namespaceProjects?.count > namespaceProjects?.items.length ? (
+              <div className="d-flex flex-row align-items-center justify-content-center">
+                <Button
+                  variant="link"
+                  onClick={() => setOffset(0)}
+                  disabled={offset === 0}
+                >
+                  First
+                </Button>
+                <Button
+                  variant="link"
+                  disabled={offset === 0}
+                  onClick={() => setOffset(offset - 1)}
+                >
+                  <i className="bi bi-arrow-left"></i>
+                  Previous
+                </Button>
+                <Button
+                  variant="link"
+                  onClick={() => setOffset(offset + 1)}
+                  disabled={offset >= namespaceProjects?.count - limit}
+                >
+                  Next
+                  <i className="bi bi-arrow-right"></i>
+                </Button>
+                <Button
+                  variant="link"
+                  onClick={() => setOffset(namespaceProjects?.count - limit)}
+                  disabled={offset >= namespaceProjects?.count - limit}
+                >
+                  Last
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        )}
       </div>
       <DeletePEPModal
         deletePEPModal={deletePEPModal}
