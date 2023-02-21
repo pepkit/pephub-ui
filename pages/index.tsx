@@ -3,11 +3,22 @@ import { useUser } from '@/hooks/useUser'
 import { signIn, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { Button } from 'react-bootstrap'
 
 export default function Home() {
   const session = useSession()
   const { data: user } = useUser(session.data?.user?.name, session !== null)
+
+  const router = useRouter()
+  const buildAuthorizationURL = () => {
+    // redirect to current page after login
+    const send_to = `${window.location.origin}${router.asPath}`
+    const api_base = process.env.NEXT_PUBLIC_AUTH_BASE
+    alert(`${api_base}/login?send_to=${send_to}`)
+    return `${api_base}/login?send_to=${send_to}`
+  }
+
   return (
     <>
       <PageLayout>
@@ -51,8 +62,9 @@ export default function Home() {
                   </Button>
                 </Link>
               ) : (
+                // <Link href={buildAuthorizationURL()}>
                 <Button
-                  onClick={() => signIn()}
+                  onClick={() => router.push(buildAuthorizationURL())}
                   variant="dark"
                   size="lg"
                   className="me-2"
@@ -60,6 +72,7 @@ export default function Home() {
                   <i className="bi bi-github me-1"></i>
                   Login with GitHub
                 </Button>
+                // </Link>
               )}
 
               <Button size="lg" variant="outline-dark">

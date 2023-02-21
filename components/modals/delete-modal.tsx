@@ -46,7 +46,7 @@ export const DeletePEPModal: FC<Props> = ({
       </Modal.Body>
       <Modal.Footer>
         <Button
-          variant="outline-secondary"
+          variant="outline-dark"
           onClick={() => {
             setDeletePEPModal(false)
             setConfirmBoxText('')

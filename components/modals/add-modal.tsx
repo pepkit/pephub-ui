@@ -78,7 +78,7 @@ export const AddPEPModal: FC<Props> = ({ addPEPModal, setAddPEPModal }) => {
             <i className="bi bi-cloud-upload me-1"></i>
             <span className="text-muted">Drag and drop files here</span>
             <span className="text-muted">or</span>
-            <Button variant="outline-secondary" className="mt-2">
+            <Button variant="outline-dark" className="mt-2">
               <i className="bi bi-folder me-1"></i>
               Select files
             </Button>
@@ -91,7 +91,7 @@ export const AddPEPModal: FC<Props> = ({ addPEPModal, setAddPEPModal }) => {
             setAddPEPModal(false)
             resetForm()
           }}
-          variant="outline-secondary"
+          variant="outline-dark"
         >
           Cancel
         </Button>

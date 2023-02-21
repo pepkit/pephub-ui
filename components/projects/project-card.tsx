@@ -76,17 +76,21 @@ export const ProjectCard: FC<Props> = ({
         )}
       </p>
       <div className="text-muted d-flex flex-row align-items-center">
-        <i className="bi bi-calendar3 me-1"></i> Created:
-        <span className="ms-1">
-          {new Date(submission_date).toLocaleDateString({
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            //@ts-ignore
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </span>
-        <div className="ms-3">{digest}</div>
+        <small>
+          <i className="bi bi-calendar3 me-1"></i> Created:
+          <span className="ms-1">
+            {new Date(submission_date).toLocaleDateString({
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-ignore
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </span>
+        </small>
+        <small>
+          <div className="ms-3">{digest}</div>
+        </small>
       </div>
     </div>
   )

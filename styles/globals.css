@@ -13,6 +13,16 @@ a {
   border-style: dashed !important;
 }
 
+/* Bootstrap overrides */
+/* 
+  btn-outline-dark hover effect
+  I dont like the normal effect, so I made my own 🙂
+*/
+.btn-outline-dark:hover {
+  color: black;
+  background-color: #0000001e;
+}
+
 /* animate-pulse from tailwind */
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;

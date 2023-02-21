@@ -55,7 +55,7 @@ const NamespacePage: NextPage = () => {
           className="d-flex flex-col align-items-center justify-content-center"
           style={{ height: '90vh' }}
         >
-          <h1 className="animate-pulse text-muted">Loading namespace...</h1>
+          <h1 className="animate-pulse">Loading namespace...</h1>
         </div>
       </PageLayout>
     )
