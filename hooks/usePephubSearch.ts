@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE
 
-const searchPephub = async (query: string) => {
+const searchPephub = async (query: string): Promise<SearchResults> => {
   const res = await fetch(`${API_BASE}/search`, {
     method: 'POST',
     headers: {

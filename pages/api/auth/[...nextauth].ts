@@ -11,6 +11,10 @@ export interface JWTWithAccessToken extends JWT {
   access_token?: string
 }
 
+export interface JWTWithGitHubData extends JWTWithAccessToken {
+  github_data?: GitHubUserResponse
+}
+
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET || '',
   providers: [
@@ -29,8 +33,18 @@ export const authOptions = {
       token: JWT
       user: DefaultUser
       account: Account
-    }) {
+    }): Promise<JWTWithGitHubData> {
       if (account && user) {
+        // get account info from github using the access token
+        const data: GitHubUserResponse = await fetch(
+          'https://api.github.com/user',
+          {
+            headers: {
+              Authorization: `Bearer ${account.access_token}`,
+            },
+          }
+        ).then((res) => res.json())
+        token.github_data = data
         token.access_token = account.access_token
       }
       return token

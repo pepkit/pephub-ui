@@ -3,6 +3,10 @@ a {
   @apply text-decoration-none;
 }
 
+.shift-left {
+  transform: translateX(-35px);
+}
+
 .dnd-border {
   border-width: 1px !important;
   border-color: #b6b6b6 !important;

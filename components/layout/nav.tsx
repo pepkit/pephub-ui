@@ -35,8 +35,9 @@ export const NavigationBar = () => {
             </Nav.Link>
           </Nav>
           <input
+            id="global-search"
             placeholder="Search PEPhub"
-            className="form-control w-25 me-3"
+            className="form-control w-25 me-1"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -45,6 +46,7 @@ export const NavigationBar = () => {
               }
             }}
           />
+          <div className="border px-2 rounded text-muted shift-left">/</div>
           {session ? (
             <>
               <Dropdown>

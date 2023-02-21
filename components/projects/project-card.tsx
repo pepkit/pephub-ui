@@ -32,7 +32,12 @@ export const ProjectCard: FC<Props> = ({
       <div className="d-flex flex-row align-items-center justify-content-between">
         <div className="d-flex flex-row align-items-center">
           <span className="h4 text-primary fw-bold mb-0">
-            {namespace}/{name}:{tag}
+            <a
+              className="text-decoration-none"
+              href={`/${namespace}/${name}?tag=${tag}`}
+            >
+              {namespace}/{name}:{tag}
+            </a>
           </span>
           {is_private ? (
             <Badge className="ms-2" pill bg="danger">
