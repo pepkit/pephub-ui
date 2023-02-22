@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react'
+import { useWindowEventListener } from './useWindowEventListener'
 
 export const useLocalStorage = (key: string, initialValue: any) => {
   // State to store our value
@@ -33,12 +34,26 @@ export const useLocalStorage = (key: string, initialValue: any) => {
       // Save to local storage
       if (typeof window !== 'undefined') {
         window.localStorage.setItem(key, JSON.stringify(valueToStore))
+        // simulate a storage fire event to update the value
+        window.location.reload()
       }
     } catch (error) {
       // A more advanced implementation would handle the error case
       console.log(error)
     }
   }
+
+  // monitor the stored value and update the returned
+  // value if it changes
+  useWindowEventListener('storage', () => {
+    const item = window.localStorage.getItem(key)
+    if (item) {
+      const value = JSON.parse(item)
+      if (value !== storedValue) {
+        setStoredValue(value)
+      }
+    }
+  })
 
   return [storedValue, setValue]
 }

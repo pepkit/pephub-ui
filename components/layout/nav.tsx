@@ -1,15 +1,16 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import { Container, Navbar, Nav, Button, Dropdown } from 'react-bootstrap'
-import { signIn, signOut } from 'next-auth/react'
 import { useUser } from '@/hooks/useUser'
 import { useRouter } from 'next/router'
-import { buildAuthorizationURL } from '@/utils/authorization'
+import { useSession } from '@/hooks/useSession'
 
 export const NavigationBar = () => {
   const user = useUser()
 
   const [searchQuery, setSearchQuery] = useState('')
+
+  const { signIn, signOut } = useSession()
 
   const router = useRouter()
 
@@ -55,7 +56,7 @@ export const NavigationBar = () => {
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item href={`/${user.login}`}>My PEPs</Dropdown.Item>
-                  <Dropdown.Item onClick={() => signOut()} href="#/action-3">
+                  <Dropdown.Item onClick={() => signOut()}>
                     Logout
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -70,11 +71,7 @@ export const NavigationBar = () => {
               {/* // eslint-disable-next-line @next/next/no-img-element */}
             </>
           ) : (
-            <Button
-              onClickCapture={() => router.push(buildAuthorizationURL())}
-              variant="dark"
-              onClick={() => signIn('github')}
-            >
+            <Button onClick={() => signIn()} variant="dark">
               <i className="bi bi-github me-1"></i>Login
             </Button>
           )}

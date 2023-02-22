@@ -1,14 +1,13 @@
 import { PageLayout } from '@/components/layout/page-layout'
+import { useSession } from '@/hooks/useSession'
 import { useUser } from '@/hooks/useUser'
-import { buildAuthorizationURL } from '@/utils/authorization'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { Button } from 'react-bootstrap'
 
 export default function Home() {
   const user = useUser()
-  const router = useRouter()
+  const { token, signIn } = useSession()
 
   return (
     <>
@@ -52,7 +51,7 @@ export default function Home() {
               ) : (
                 // <Link href={buildAuthorizationURL()}>
                 <Button
-                  onClick={() => router.push(buildAuthorizationURL())}
+                  onClick={() => signIn()}
                   variant="dark"
                   size="lg"
                   className="me-2"
@@ -79,6 +78,12 @@ export default function Home() {
             />
           </div>
         </div>
+        <pre>
+          <code>{JSON.stringify(user, null, 2)}</code>
+        </pre>
+        <pre>
+          <code>{JSON.stringify(token, null, 2)}</code>
+        </pre>
       </PageLayout>
     </>
   )
