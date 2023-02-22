@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const AddPEPModal: FC<Props> = ({ addPEPModal, setAddPEPModal }) => {
-  const { data: user } = useUser()
+  const user = useUser()
   const [isPrivate, setIsPrivate] = useState('')
   const [namespace, setNamespace] = useState('')
   const [name, setName] = useState('')

@@ -1,8 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import axios from 'axios'
+import jwt from 'jsonwebtoken'
+import { useLocalStorage } from './useLocalStorage'
 
-interface GitHubUserResponse {
+interface SessionInfo {
+  orgs: string[]
   login: string
   id: number
   node_id: string
@@ -35,33 +35,18 @@ interface GitHubUserResponse {
   following: number
   created_at: string
   updated_at: string
-  private_gists: number
-  total_private_repos: number
-  owned_private_repos: number
-  disk_usage: number
-  collaborators: number
-  two_factor_authentication: boolean
-  plan: {
-    name: string
-    space: number
-    private_repos: number
-    collaborators: number
+  exp: number
+}
+
+export const useUser = (): SessionInfo | null => {
+  const [pephubJWT] = useLocalStorage(
+    process.env.NEXT_PUBLIC_JWT_STORAGE_KEY || 'pephub_jwt',
+    null
+  )
+  if (pephubJWT !== null) {
+    const decoded: SessionInfo = jwt.decode(pephubJWT)
+    return decoded
+  } else {
+    return null
   }
-}
-
-const fetchCurrentUser = () => {
-  return axios.get<GitHubUserResponse>('/api/github/account')
-}
-
-export const useUser = (
-  name: string | undefined | null = null,
-  enabled = true
-) => {
-  const session = useSession()
-  const query = useQuery({
-    queryKey: ['current-user', name || session.data?.user?.name],
-    queryFn: fetchCurrentUser,
-    enabled: enabled || !!session.data?.user?.name,
-  })
-  return query
 }

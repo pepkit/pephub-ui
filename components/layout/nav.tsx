@@ -1,13 +1,13 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import { Container, Navbar, Nav, Button, Dropdown } from 'react-bootstrap'
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { signIn, signOut } from 'next-auth/react'
 import { useUser } from '@/hooks/useUser'
 import { useRouter } from 'next/router'
+import { buildAuthorizationURL } from '@/utils/authorization'
 
 export const NavigationBar = () => {
-  const { data: session } = useSession()
-  const { data: githubInfo } = useUser(session?.user?.name, session !== null)
+  const user = useUser()
 
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -47,24 +47,22 @@ export const NavigationBar = () => {
             }}
           />
           <div className="border px-2 rounded text-muted shift-left">/</div>
-          {session ? (
+          {user ? (
             <>
               <Dropdown>
                 <Dropdown.Toggle variant="outline" id="dropdown-basic">
                   Profile
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item href={`/${githubInfo?.data.login}`}>
-                    My PEPs
-                  </Dropdown.Item>
+                  <Dropdown.Item href={`/${user.login}`}>My PEPs</Dropdown.Item>
                   <Dropdown.Item onClick={() => signOut()} href="#/action-3">
                     Logout
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
               <Image
-                alt={session.user?.name || 'Logged in user'}
-                src={session.user?.image || ''}
+                alt={user?.name || 'Logged in user'}
+                src={user?.avatar_url || ''}
                 className="rounded-circle ms-2"
                 width="40"
                 height="40"
@@ -72,7 +70,11 @@ export const NavigationBar = () => {
               {/* // eslint-disable-next-line @next/next/no-img-element */}
             </>
           ) : (
-            <Button variant="dark" onClick={() => signIn('github')}>
+            <Button
+              onClickCapture={() => router.push(buildAuthorizationURL())}
+              variant="dark"
+              onClick={() => signIn('github')}
+            >
               <i className="bi bi-github me-1"></i>Login
             </Button>
           )}

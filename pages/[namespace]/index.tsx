@@ -3,7 +3,6 @@ import { PageLayout } from '@/components/layout/page-layout'
 import { NextPage } from 'next'
 import { useNamespaceProjects } from '@/hooks/useNamespaceProjects'
 import { Button, Form, Spinner } from 'react-bootstrap'
-import { useSession } from 'next-auth/react'
 import { useUser } from '@/hooks/useUser'
 import { useNamespace } from '@/hooks/useNamespace'
 import { ProjectCard } from '@/components/projects/project-card'
@@ -19,8 +18,7 @@ const NamespacePage: NextPage = () => {
   const { namespace } = router.query
 
   // user and session
-  const { data: session } = useSession()
-  const { data: user } = useUser(session?.user?.name, session !== null)
+  const user = useUser()
 
   // search things
   const [search, setSearch] = useState('')
@@ -55,7 +53,7 @@ const NamespacePage: NextPage = () => {
           className="d-flex flex-col align-items-center justify-content-center"
           style={{ height: '90vh' }}
         >
-          <h1 className="animate-pulse">Loading namespace...</h1>
+          <p className="animate-pulse">Loading namespace...</p>
         </div>
       </PageLayout>
     )
@@ -70,11 +68,11 @@ const NamespacePage: NextPage = () => {
   }
 
   return (
-    <PageLayout title={`pephub | ${user?.data.login}`}>
+    <PageLayout title={`pephub | ${user?.login}`}>
       <div className="d-flex flex-row align-items-center justify-content-between mt-3">
         <h1 className="fw-bold">{namespace}</h1>
         <div>
-          {user?.data.login === namespace ? (
+          {user?.login === namespace ? (
             <>
               <Button
                 onClick={() => setNamespaceEndpointsModal(true)}
