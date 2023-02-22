@@ -1,5 +1,6 @@
+import { SITE_CONSTS } from '@/data/const'
 import jwt from 'jsonwebtoken'
-import { useLocalStorage } from './useLocalStorage'
+import { useCookies } from 'react-cookie'
 
 interface SessionInfo {
   orgs: string[]
@@ -39,12 +40,11 @@ interface SessionInfo {
 }
 
 export const useUser = (): SessionInfo | null => {
-  const [pephubJWT] = useLocalStorage(
-    process.env.NEXT_PUBLIC_JWT_STORAGE_KEY || 'pephub_jwt',
-    null
-  )
-  if (pephubJWT !== null) {
-    const decoded: SessionInfo = jwt.decode(pephubJWT)
+  const [cookies] = useCookies([SITE_CONSTS.jwt_storage_key])
+  if (cookies[SITE_CONSTS.jwt_storage_key] !== null) {
+    const decoded: SessionInfo = jwt.decode(
+      cookies[SITE_CONSTS.jwt_storage_key]
+    )
     return decoded
   } else {
     return null

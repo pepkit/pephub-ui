@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
-import { useLocalStorage } from './useLocalStorage'
+import { SITE_CONSTS } from '@/data/const'
+import { useCookies } from 'react-cookie'
 
 const AUTHORIZATION_BASE = process.env.NEXT_PUBLIC_AUTH_BASE
 
@@ -13,10 +14,7 @@ interface Session {
 
 export const useSession = (): Session => {
   const router = useRouter()
-  const [pephubJWT, setPEPhubJWT] = useLocalStorage(
-    process.env.NEXT_PUBLIC_JWT_STORAGE_KEY || 'pephub_jwt',
-    null
-  )
+  const [cookies, , removeCookie] = useCookies([SITE_CONSTS.jwt_storage_key])
 
   // build helper functions
   const buildAuthorizationURL = (
@@ -29,7 +27,7 @@ export const useSession = (): Session => {
   }
 
   const signOut = () => {
-    setPEPhubJWT(null)
+    removeCookie(SITE_CONSTS.jwt_storage_key)
   }
 
   const signIn = (redirect: string | undefined = undefined) => {
@@ -38,11 +36,11 @@ export const useSession = (): Session => {
   }
 
   const buildAuthorizationURLCached = useCallback(buildAuthorizationURL, [])
-  const signOutCached = useCallback(signOut, [setPEPhubJWT])
+  const signOutCached = useCallback(signOut, [removeCookie])
   const signInCached = useCallback(signIn, [router])
 
   return {
-    token: pephubJWT,
+    token: cookies[SITE_CONSTS.jwt_storage_key],
     signIn: signInCached,
     signOut: signOutCached,
     buildAuthorizationURL: buildAuthorizationURLCached,
